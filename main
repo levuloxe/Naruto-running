@@ -1,0 +1,60 @@
+import pygame, sys
+from home import Home
+from game import Game
+
+pygame.init()
+screen_width = 1000
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Naruto running")
+
+clock = pygame.time.Clock()
+
+home = Home(screen, screen_width, screen_height)
+game = Game(screen, screen_width, screen_height)
+
+home_active = True
+game_active = False
+
+bg_music = pygame.mixer.Sound('asset/Audio/bg_music.wav')
+bg_music.set_volume(0.5)
+bg_music.play(loops = -1)
+
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            home_active = False
+            game_active = True
+
+    if home_active == True:
+        home.run()
+
+    if game_active == True:
+        game.run()
+
+    pygame.display.flip()
+    clock.tick(60)
+import pygame
+
+class Home():
+    def __init__(self, screen, screen_width, screen_height):
+        self.screen = screen
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+
+        self.bg_image = pygame.image.load('asset/background.png').convert_alpha()
+        self.bg_image = pygame.transform.scale(self.bg_image, (1000, 600))
+
+        #font
+        self.font = pygame.font.Font('asset/fibberish.ttf', 100)
+
+    def run(self):
+        self.screen.blit(self.bg_image, (0, 0))
+
+        title_surf = self.font.render('Naruto runner', False, 'white')
+        title_rect = title_surf.get_rect(center = (self.screen_width / 2, self.screen_height / 2))
+        self.screen.blit(title_surf, title_rect)
